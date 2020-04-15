@@ -9,6 +9,8 @@ using Unity.Jobs;
 
 namespace TD
 {
+    public struct Enemy:IComponentData{}
+
     public struct EnemyMoveData : IComponentData //define the component that our enemies will have
     { 
         public int targetIndex;

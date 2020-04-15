@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465785, g: 0.49641252, b: 0.574817, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -185,8 +185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aca24f9fc79ac51498b0a06320b8ca9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyAmount: 100
-  waitBetweenSpawnTime: 0.5
+  enemyAmount: 10
+  waitBetweenSpawnTime: 1
 --- !u!4 &564321124
 Transform:
   m_ObjectHideFlags: 0
@@ -889,6 +889,7 @@ GameObject:
   - component: {fileID: 1843182904}
   - component: {fileID: 1843182903}
   - component: {fileID: 1843182905}
+  - component: {fileID: 1843182906}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -910,8 +911,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meshes:
   - {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: -5495902117074765545, guid: d23f2bf0e97a9ded39052538818f4259, type: 3}
   materials:
   - {fileID: 2100000, guid: 0460a625a047d2346946d21f8fd0cd17, type: 2}
+  - {fileID: 2100000, guid: f88dd592d502edf22a924a4a317115c4, type: 2}
 --- !u!4 &1843182904
 Transform:
   m_ObjectHideFlags: 0
@@ -939,6 +942,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthImage: {fileID: 727528799}
+--- !u!114 &1843182906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1843182902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26e0f4f970c025482930d472352347d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position:
+  - x: 4
+    y: 0
+    z: 5
 --- !u!1 &2068630597
 GameObject:
   m_ObjectHideFlags: 0

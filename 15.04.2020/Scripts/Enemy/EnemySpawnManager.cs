@@ -37,7 +37,8 @@ namespace TD
                 typeof(EnemyMoveData),
                 typeof(EnemyAttack),
                 typeof(EnemyHealth),
-                typeof(MeshRendererData)
+                typeof(MeshRendererData),
+                typeof(Enemy)
                 ); //define enemy type
 
 

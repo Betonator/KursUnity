@@ -7,13 +7,6 @@ using UnityEngine.Jobs;
 using Unity.Mathematics;
 using Unity.Jobs;
 using UnityEngine.UI;
-    
-public struct PlayerData : IComponentData //define the component of the player
-{
-    public int health;
-    public int money;
-}
-
 
 public class Player : MonoBehaviour {
 
@@ -34,11 +27,6 @@ public class Player : MonoBehaviour {
 
     void Start()
     {
-        EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-
-        EntityArchetype playerType = entityManager.CreateArchetype(
-            typeof(PlayerData)
-            ); //define enemy type
 
 
         healthImage.fillAmount = 1f;

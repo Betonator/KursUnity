@@ -29,6 +29,9 @@ namespace TD
             instance = this;
         }
 
+private float spawnTimer;
+
+
         void Start()
         {
             spawnManager = World.DefaultGameObjectInjectionWorld.EntityManager;
@@ -44,27 +47,41 @@ namespace TD
                 typeof(Enemy)
                 ); //define enemy type
 
-
+            spawnTimer = waitBetweenSpawnTime;
         }
-
+private bool spawn = false;
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                StartCoroutine(SpawnCoroutine()); //start the spawn coroutine, runs on separate thread
+                //StartCoroutine(SpawnCoroutine()); //start the spawn coroutine, runs on separate thread
+                spawn = true;
+            }
+
+            if(spawn == true){
+                if(startingEnemyAmount < enemyAmount && spawnTimer >= waitBetweenSpawnTime){
+                        SpawnEnemy();
+                        startingEnemyAmount++;
+                        spawnTimer = 0.0f;
+                        if(startingEnemyAmount == enemyAmount)
+                        {
+                            spawn = false;
+                        }
+                }
+                spawnTimer += Time.deltaTime;
             }
         }
 
-        IEnumerator SpawnCoroutine()
-        {
-            while (startingEnemyAmount < enemyAmount) //until we reach desired amount, spawn enemies
-            {
-                SpawnEnemy();
-                yield return new WaitForSeconds(waitBetweenSpawnTime); //wait for the time
-                startingEnemyAmount++;
-            }
-            yield return 0;
-        }
+        // IEnumerator SpawnCoroutine()
+        // {
+        //     while (startingEnemyAmount < enemyAmount) //until we reach desired amount, spawn enemies
+        //     {
+        //         SpawnEnemy();
+        //         yield return new WaitForSeconds(waitBetweenSpawnTime); //wait for the time
+        //         startingEnemyAmount++;
+        //     }
+        //     yield return 0;
+        // }
 
         public void SpawnEnemy()
         {

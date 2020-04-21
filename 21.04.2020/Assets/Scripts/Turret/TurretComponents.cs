@@ -20,11 +20,7 @@ public struct HasTarget : IComponentData{
     public Entity target;
 }
 
-public struct TurretRotation: IComponentData{
-    public float angle;
-}
-
-public class TurretAim : ComponentSystem
+public class TurretFindTarget : ComponentSystem
 { 
     protected override void OnUpdate()
     { 
@@ -49,8 +45,29 @@ public class TurretAim : ComponentSystem
                 }
             });
 
-            if(newTarget == Entity.Null){
+            if(newTarget != Entity.Null){
+                Debug.Log("Mam cel");
                 PostUpdateCommands.AddComponent(turretEntity, new HasTarget{ target = newTarget });
+            }
+        });
+    }
+}
+
+public class TurretAim : ComponentSystem
+{
+    protected override void OnUpdate()
+    { 
+        EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        Entities.WithAll<HasTarget>().ForEach((Entity entity, ref Translation turretPos, ref Rotation turretRot, ref HasTarget target)=>{
+            if(target.target != Entity.Null){
+                
+                Translation enemyPos = entityManager.GetComponentData<Translation>(target.target);
+
+                float3 forward = enemyPos.Value - turretPos.Value;
+                turretRot.Value = quaternion.LookRotation(forward, new float3(0,1,0));
+            }
+            else{
+                PostUpdateCommands.RemoveComponent(entity, typeof(HasTarget));
             }
         });
     }
@@ -62,14 +79,28 @@ public class TurretComponents : MonoBehaviour {
     [SerializeField]
     private float3[] position;
 
+    private EntityManager entityManager;
+    private EntityArchetype archetype;
+    private static TurretComponents instance;
+    public static TurretComponents GetTurret(){
+        return instance;
+    }
+
+    void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
         Manager manager = Manager.GetManager();
-        EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-        EntityArchetype archetype = entityManager.CreateArchetype(
+        archetype = entityManager.CreateArchetype(
             typeof(Turret),
+            typeof(TurretAttack),
             typeof(Translation),
+            typeof(Rotation),
             typeof(RenderMesh),
             typeof(RenderBounds),
             typeof(LocalToWorld)
@@ -81,10 +112,16 @@ public class TurretComponents : MonoBehaviour {
 
         for(int i = 0; i < position.Length; i++){
             Entity entity = turrets[i];
-
+            entityManager.SetComponentData(entity, new TurretAttack{ 
+                range = 10,
+                damage = 10
+                });
             entityManager.SetComponentData(entity, new Translation{ 
                 Value = position[i]
                 });
+            entityManager.SetComponentData(entity, new Rotation{
+                Value = quaternion.Euler(0,0,0)
+            });
             entityManager.SetSharedComponentData(entity, new RenderMesh{
                 mesh = manager.meshes[1],
                 material = manager.materials[1]
@@ -92,5 +129,24 @@ public class TurretComponents : MonoBehaviour {
         }
 
         turrets.Dispose();
+    }
+
+    public void createTurret(float3 position){
+        Manager manager = Manager.GetManager();
+        Entity entity = entityManager.CreateEntity(archetype);
+        entityManager.SetComponentData(entity, new TurretAttack{ 
+            range = 10,
+            damage = 10
+            });
+        entityManager.SetComponentData(entity, new Translation{ 
+            Value = position
+            });
+        entityManager.SetComponentData(entity, new Rotation{
+            Value = quaternion.Euler(0,0,0)
+        });
+        entityManager.SetSharedComponentData(entity, new RenderMesh{
+            mesh = manager.meshes[1],
+            material = manager.materials[1]
+            });
     }
 }

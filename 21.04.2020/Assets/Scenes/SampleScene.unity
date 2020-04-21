@@ -379,8 +379,8 @@ GameObject:
   - component: {fileID: 730813313}
   - component: {fileID: 730813312}
   m_Layer: 0
-  m_Name: Plane
-  m_TagString: Untagged
+  m_Name: Ground
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -890,6 +890,7 @@ GameObject:
   - component: {fileID: 1843182903}
   - component: {fileID: 1843182905}
   - component: {fileID: 1843182906}
+  - component: {fileID: 1843182907}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -958,6 +959,19 @@ MonoBehaviour:
   - x: 4
     y: 0
     z: 5
+--- !u!114 &1843182907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1843182902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2edf8ee379a93c1a5a88ef610cb076f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera: {fileID: 963194227}
 --- !u!1 &2068630597
 GameObject:
   m_ObjectHideFlags: 0

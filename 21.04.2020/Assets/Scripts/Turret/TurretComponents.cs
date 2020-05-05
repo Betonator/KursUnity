@@ -20,6 +20,10 @@ public struct HasTarget : IComponentData{
     public Entity target;
 }
 
+public struct Angle : IComponentData{
+    public float angle;
+}
+
 public class TurretFindTarget : ComponentSystem
 { 
     protected override void OnUpdate()
@@ -46,25 +50,43 @@ public class TurretFindTarget : ComponentSystem
             });
 
             if(newTarget != Entity.Null){
-                Debug.Log("Mam cel");
                 PostUpdateCommands.AddComponent(turretEntity, new HasTarget{ target = newTarget });
             }
         });
     }
 }
 
+
+
 public class TurretAim : ComponentSystem
 {
     protected override void OnUpdate()
     { 
         EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-        Entities.WithAll<HasTarget>().ForEach((Entity entity, ref Translation turretPos, ref Rotation turretRot, ref HasTarget target)=>{
+        Entities.WithAll<HasTarget>().ForEach((Entity entity, ref Translation turretPos, ref Rotation turretRot, ref Angle angle, ref HasTarget target)=>{
             if(target.target != Entity.Null){
                 
                 Translation enemyPos = entityManager.GetComponentData<Translation>(target.target);
 
-                float3 forward = enemyPos.Value - turretPos.Value;
-                turretRot.Value = quaternion.LookRotation(forward, new float3(0,1,0));
+                float3 targetVec = enemyPos.Value - turretPos.Value;
+
+                float len = targetVec.x*targetVec.x + targetVec.y*targetVec.y + targetVec.z*targetVec.z;
+                len = Mathf.Sqrt(len);
+
+                float a = targetVec.z / len;
+
+                a = Mathf.Acos(a);
+
+                float rad = angle.angle * Mathf.Deg2Rad;
+
+                if(targetVec.x <  0) a = -a;
+
+                float speedInDeg = 90.0f;
+                float maxDelta = Mathf.Deg2Rad * speedInDeg * Time.DeltaTime;
+
+                float newRot = Mathf.MoveTowards(rad, a, maxDelta);
+                angle.angle = newRot * Mathf.Rad2Deg;
+                turretRot.Value = quaternion.EulerXYZ(0, newRot, 0);
             }
             else{
                 PostUpdateCommands.RemoveComponent(entity, typeof(HasTarget));
@@ -101,6 +123,7 @@ public class TurretComponents : MonoBehaviour {
             typeof(TurretAttack),
             typeof(Translation),
             typeof(Rotation),
+            typeof(Angle),
             typeof(RenderMesh),
             typeof(RenderBounds),
             typeof(LocalToWorld)
@@ -121,6 +144,9 @@ public class TurretComponents : MonoBehaviour {
                 });
             entityManager.SetComponentData(entity, new Rotation{
                 Value = quaternion.Euler(0,0,0)
+            });
+            entityManager.SetComponentData(entity, new Angle{
+                angle = 0.0f
             });
             entityManager.SetSharedComponentData(entity, new RenderMesh{
                 mesh = manager.meshes[1],
@@ -143,6 +169,9 @@ public class TurretComponents : MonoBehaviour {
             });
         entityManager.SetComponentData(entity, new Rotation{
             Value = quaternion.Euler(0,0,0)
+        });
+        entityManager.SetComponentData(entity, new Angle{
+            angle = 0.0f
         });
         entityManager.SetSharedComponentData(entity, new RenderMesh{
             mesh = manager.meshes[1],
